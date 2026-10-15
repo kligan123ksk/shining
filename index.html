@@ -1,0 +1,1425 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f8f4ef">
+
+  <title>Для тебя ❤️</title>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Manrope:wght@300;400;500&display=swap');
+
+    :root {
+      --background: #f8f4ef;
+      --paper: #fffdf9;
+      --rose: #c58f91;
+      --rose-light: #e8d1cd;
+      --text: #39302e;
+      --muted: #8b7b76;
+      --section: #f0e7e1;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 25px;
+    }
+
+    body {
+      background: var(--background);
+      color: var(--text);
+      font-family: 'Manrope', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    body.locked {
+      overflow: hidden;
+    }
+
+    img {
+      max-width: 100%;
+    }
+
+    /* ===== Окно-пропуск ===== */
+
+    .gate {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 25px;
+      background: var(--background);
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+
+    .gate.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .gate-card {
+      width: min(100%, 420px);
+      padding: 45px 30px;
+      background: var(--paper);
+      border: 1px solid #eee3db;
+      border-radius: 6px;
+      box-shadow: 0 20px 55px #61463c1a;
+      text-align: center;
+      animation: fade-up 0.7s ease both;
+    }
+
+    .gate-heart {
+      color: var(--rose);
+      font-size: 44px;
+      animation: heartbeat 2s ease-in-out infinite;
+    }
+
+    .gate-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 30px;
+      font-weight: 500;
+      margin: 18px 0 10px;
+    }
+
+    .gate-subtitle {
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 30px;
+    }
+
+    .gate-tease {
+      min-height: 20px;
+      color: var(--rose);
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 17px;
+      margin-bottom: 12px;
+    }
+
+    .gate-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    .gate-yes,
+    .gate-no {
+      padding: 13px 26px;
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 13px;
+      cursor: pointer;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .gate-yes {
+      border: 0;
+      background: var(--rose);
+      color: white;
+    }
+
+    .gate-yes:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px #c58f9155;
+    }
+
+    .gate-no {
+      border: 1px solid var(--rose-light);
+      background: transparent;
+      color: var(--muted);
+    }
+
+    .gate-no.flying {
+      position: fixed;
+      z-index: 210;
+      transition: top 0.35s ease, left 0.35s ease;
+    }
+
+    /* Экран отказа */
+
+    .gate-denied {
+      display: none;
+      width: min(100%, 420px);
+      padding: 45px 30px;
+      background: var(--paper);
+      border: 1px solid #eee3db;
+      border-radius: 6px;
+      box-shadow: 0 20px 55px #61463c1a;
+      text-align: center;
+      animation: fade-up 0.7s ease both;
+    }
+
+    .gate.denied .gate-card {
+      display: none;
+    }
+
+    .gate.denied .gate-denied {
+      display: block;
+    }
+
+    .gate-denied .gate-title {
+      margin-top: 14px;
+    }
+
+    .gate-denied p {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.8;
+      margin-bottom: 28px;
+    }
+
+    .gate-retry {
+      padding: 12px 24px;
+      border: 1px solid var(--rose-light);
+      background: transparent;
+      color: var(--rose);
+      font-family: inherit;
+      font-size: 12px;
+      letter-spacing: 1px;
+      cursor: pointer;
+    }
+
+    .gate-retry:hover {
+      background: #f8f1eb;
+    }
+
+    /* ===== Верхняя часть сайта ===== */
+
+    .hero {
+      min-height: 82vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 80px 24px;
+    }
+
+    .small-title {
+      color: var(--rose);
+      font-size: 11px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 25px;
+    }
+
+    .hero h1 {
+      max-width: 900px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(48px, 7vw, 92px);
+      font-weight: 400;
+      line-height: 1.05;
+    }
+
+    .hero h1 em {
+      color: var(--rose);
+      font-weight: 400;
+    }
+
+    .hero-description {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 2;
+      margin-top: 26px;
+    }
+
+    .scroll-link {
+      display: inline-block;
+      margin-top: 45px;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 11px;
+      letter-spacing: 2px;
+      border-bottom: 1px solid var(--rose-light);
+      padding-bottom: 9px;
+      transition: color 0.3s;
+    }
+
+    .scroll-link:hover {
+      color: var(--rose);
+    }
+
+    /* ===== Общие настройки секций ===== */
+
+    section {
+      padding: 100px 24px;
+    }
+
+    .section-inner {
+      width: 100%;
+      max-width: 1050px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      color: var(--rose);
+      text-align: center;
+      text-transform: uppercase;
+      font-size: 10px;
+      letter-spacing: 3px;
+      margin-bottom: 17px;
+    }
+
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(36px, 5vw, 58px);
+      line-height: 1.15;
+      text-align: center;
+      font-weight: 400;
+      margin-bottom: 48px;
+    }
+
+    .section-title em {
+      color: var(--rose);
+      font-weight: 400;
+    }
+
+    /* ===== Коллаж фотографий ===== */
+
+    .collage-layout {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr 1.15fr 1fr;
+      align-items: center;
+      gap: 25px;
+      width: 100%;
+      max-width: 850px;
+      margin: 0 auto;
+      padding-bottom: 65px;
+    }
+
+    .photo {
+      background: var(--paper);
+      padding: 11px 11px 34px;
+      box-shadow: 0 12px 35px #51413b12;
+      cursor: zoom-in;
+      transition: box-shadow 0.35s ease;
+      animation: fade-up 0.9s ease both;
+    }
+
+    .photo:hover {
+      box-shadow: 0 20px 45px #51413b22;
+    }
+
+    .photo img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      object-fit: cover;
+      object-position: 50% 20%;
+      background: #eee4dd;
+    }
+
+    .ph-left {
+      transform: rotate(-6deg) translateY(18px);
+    }
+
+    .ph-left:hover {
+      transform: rotate(-3deg) translateY(8px);
+    }
+
+    .ph-center {
+      transform: rotate(2deg);
+      z-index: 1;
+    }
+
+    .ph-center:hover {
+      transform: rotate(0deg) scale(1.025);
+    }
+
+    .ph-right {
+      transform: rotate(6deg) translateY(20px);
+    }
+
+    .ph-right:hover {
+      transform: rotate(3deg) translateY(8px);
+    }
+
+    .note {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 8px;
+      text-align: center;
+      color: var(--muted);
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 21px;
+    }
+
+    /* ===== Таймер ===== */
+
+    .countdown-section {
+      background: var(--section);
+      text-align: center;
+    }
+
+    .countdown-title {
+      margin-bottom: 15px;
+    }
+
+    .countdown-subtitle {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.8;
+      margin: 0 auto 45px;
+    }
+
+    .timer {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: clamp(10px, 3vw, 30px);
+    }
+
+    .time-box {
+      min-width: 65px;
+    }
+
+    .time-value {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(42px, 7vw, 70px);
+      line-height: 1.1;
+      font-weight: 400;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .time-label {
+      margin-top: 9px;
+      color: var(--muted);
+      font-size: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .colon {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 42px;
+      color: var(--rose);
+      transform: translateY(-8px);
+    }
+
+    .after-countdown {
+      margin-top: 35px;
+      color: var(--rose);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    /* ===== Секция письма ===== */
+
+    .letter-section {
+      background: #fcf8f4;
+      text-align: center;
+    }
+
+    .letter-intro {
+      color: var(--muted);
+      font-size: 13px;
+      margin: -25px auto 35px;
+      line-height: 1.8;
+    }
+
+    .envelope {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: min(100%, 420px);
+      min-height: 220px;
+      margin: 0 auto;
+      padding: 35px 20px;
+      border: 1px solid #e8d5ce;
+      border-radius: 4px;
+      background: linear-gradient(145deg, #f3e5df, #ead4ce);
+      color: #493a37;
+      cursor: pointer;
+      box-shadow: 0 15px 40px #61463c12;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .envelope:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 45px #61463c20;
+    }
+
+    .envelope-heart {
+      display: grid;
+      place-items: center;
+      width: 45px;
+      height: 45px;
+      margin-bottom: 15px;
+      border-radius: 50%;
+      background: #c58f91;
+      color: white;
+      font-size: 28px;
+    }
+
+    .envelope-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 30px;
+    }
+
+    .envelope-hint {
+      margin-top: 12px;
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #8b6e68;
+    }
+
+    /* ===== Письмо поверх страницы ===== */
+
+    .letter-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 150;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 25px;
+      background: #211a1aeb;
+      overflow-y: auto;
+    }
+
+    .letter-overlay.active {
+      display: flex;
+      animation: fade-in 0.25s ease both;
+    }
+
+    /* ===== Тетрадный лист в клетку ===== */
+
+    .letter-paper {
+      width: min(100%, 650px);
+      margin: 30px auto;
+      padding: clamp(25px, 6vw, 55px);
+      padding-left: clamp(60px, 9vw, 80px);
+      background-color: #fdfcf7;
+      background-image:
+        linear-gradient(rgba(122, 160, 190, 0.35) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(122, 160, 190, 0.35) 1px, transparent 1px),
+        linear-gradient(90deg,
+          transparent 0,
+          transparent 52px,
+          rgba(224, 122, 122, 0.55) 52px,
+          rgba(224, 122, 122, 0.55) 54px,
+          transparent 54px);
+      background-size: 28px 28px, 28px 28px, 100% 100%;
+      border: 1px solid #eee3db;
+      box-shadow: 0 15px 45px #61463c0d;
+      text-align: left;
+      animation: fade-up 0.7s ease both;
+    }
+
+    .letter-date {
+      color: var(--rose);
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 30px;
+    }
+
+    .letter-paper h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 34px;
+      font-weight: 500;
+      margin-bottom: 22px;
+    }
+
+    .letter-paper p {
+      color: #594b46;
+      font-size: 14px;
+      line-height: 2;
+      margin-bottom: 18px;
+    }
+
+    .letter-signature {
+      margin-top: 30px;
+      color: var(--rose);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 29px;
+      font-style: italic;
+      text-align: right;
+    }
+
+    .close-letter {
+      display: block;
+      margin: 30px auto 0;
+      padding: 12px 20px;
+      border: 1px solid #e8d5ce;
+      background: transparent;
+      color: #8b6e68;
+      font-family: inherit;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .close-letter:hover {
+      background: #f8f1eb;
+    }
+
+    /* ===== Секция отправки фото (ссылка на форму) ===== */
+
+    .upload-section {
+      text-align: center;
+    }
+
+    .upload-button {
+      display: inline-block;
+      padding: 13px 26px;
+      border: 0;
+      border-radius: 4px;
+      background: var(--rose);
+      color: white;
+      font-family: inherit;
+      font-size: 13px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .upload-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px #c58f9155;
+    }
+
+    /* ===== Нижняя часть ===== */
+
+    footer {
+      padding: 85px 24px;
+      text-align: center;
+    }
+
+    .heart {
+      display: inline-block;
+      color: var(--rose);
+      font-size: 32px;
+      animation: heartbeat 2s ease-in-out infinite;
+    }
+
+    footer p {
+      margin-top: 15px;
+      color: var(--muted);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 27px;
+      line-height: 1.4;
+    }
+
+    .signature {
+      margin-top: 20px;
+      color: var(--rose);
+      font-size: 10px;
+      letter-spacing: 3px;
+    }
+
+    /* ===== Увеличенная фотография ===== */
+
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 25px;
+      background: #211a1aeb;
+      cursor: zoom-out;
+    }
+
+    .lightbox.active {
+      display: flex;
+      animation: fade-in 0.25s ease both;
+    }
+
+    .lightbox img {
+      max-width: 95%;
+      max-height: 85vh;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      box-shadow: 0 15px 50px #0004;
+    }
+
+    .close-lightbox {
+      position: absolute;
+      top: 15px;
+      right: 25px;
+      border: 0;
+      background: transparent;
+      color: white;
+      font-family: sans-serif;
+      font-size: 38px;
+      cursor: pointer;
+    }
+
+    /* ===== Адаптация под планшеты ===== */
+
+    @media (max-width: 800px) {
+      section {
+        padding: 75px 22px;
+      }
+
+      .collage-layout {
+        gap: 15px;
+        max-width: 700px;
+      }
+
+      .photo {
+        padding: 8px 8px 25px;
+      }
+
+      .time-box {
+        min-width: 55px;
+      }
+    }
+
+    /* ===== Адаптация под телефоны ===== */
+
+    @media (max-width: 600px) {
+      .hero {
+        min-height: 75svh;
+        padding: 65px 20px;
+      }
+
+      .hero h1 {
+        font-size: clamp(43px, 11vw, 62px);
+      }
+
+      .hero-description {
+        font-size: 13px;
+      }
+
+      section {
+        padding: 65px 16px;
+      }
+
+      .section-title {
+        font-size: clamp(32px, 8vw, 43px);
+        margin-bottom: 35px;
+      }
+
+      .collage-layout {
+        grid-template-columns: 1fr 1.12fr 1fr;
+        gap: 8px;
+        padding-bottom: 55px;
+      }
+
+      .photo {
+        padding: 5px 5px 17px;
+      }
+
+      .photo img {
+        aspect-ratio: 3 / 4;
+      }
+
+      .ph-left {
+        transform: rotate(-5deg) translateY(10px);
+      }
+
+      .ph-center {
+        transform: rotate(1deg);
+      }
+
+      .ph-right {
+        transform: rotate(5deg) translateY(12px);
+      }
+
+      .note {
+        font-size: 16px;
+        bottom: 8px;
+      }
+
+      .countdown-subtitle {
+        max-width: 300px;
+        font-size: 12px;
+        margin-bottom: 35px;
+      }
+
+      .timer {
+        gap: clamp(5px, 2vw, 12px);
+      }
+
+      .time-box {
+        min-width: 0;
+        flex: 1;
+      }
+
+      .time-value {
+        font-size: clamp(34px, 9vw, 49px);
+      }
+
+      .time-label {
+        font-size: 8px;
+        letter-spacing: 0.4px;
+      }
+
+      .colon {
+        font-size: 26px;
+      }
+
+      .envelope {
+        min-height: 190px;
+      }
+
+      .envelope-title {
+        font-size: 27px;
+      }
+
+      .gate-card,
+      .gate-denied {
+        padding: 35px 22px;
+      }
+
+      .gate-buttons {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      /* На телефоне клетка мельче и без линии полей */
+
+      .letter-paper {
+        background-image:
+          linear-gradient(rgba(122, 160, 190, 0.35) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(122, 160, 190, 0.35) 1px, transparent 1px);
+        background-size: 24px 24px;
+        padding-left: clamp(25px, 6vw, 55px);
+      }
+
+      .letter-paper p {
+        font-size: 13px;
+        line-height: 1.9;
+      }
+
+      footer {
+        padding: 65px 20px;
+      }
+
+      footer p {
+        font-size: 24px;
+      }
+    }
+
+    /* ===== Очень узкие телефоны ===== */
+
+    @media (max-width: 360px) {
+      .small-title {
+        letter-spacing: 2px;
+      }
+
+      .collage-layout {
+        gap: 5px;
+      }
+
+      .photo {
+        padding: 4px 4px 13px;
+      }
+
+      .time-value {
+        font-size: 31px;
+      }
+
+      .colon {
+        font-size: 22px;
+      }
+
+      .time-label {
+        font-size: 7px;
+      }
+    }
+
+    /* ===== Анимации ===== */
+
+    @keyframes fade-up {
+      from {
+        opacity: 0;
+        translate: 0 18px;
+      }
+      to {
+        opacity: 1;
+        translate: 0 0;
+      }
+    }
+
+    @keyframes fade-in {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes heartbeat {
+      0%, 100% { scale: 1; }
+      50% { scale: 1.15; }
+    }
+
+    /* ===== Уменьшение анимации по настройкам устройства ===== */
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body class="locked">
+
+  <!-- Окно-пропуск -->
+
+  <div class="gate" id="gate" aria-hidden="false">
+
+    <div class="gate-card">
+      <div class="gate-heart">❤</div>
+      <h2 class="gate-title">А ты точно Женя?</h2>
+      <div class="gate-subtitle">вход только для одного человека</div>
+      <div class="gate-tease" id="gate-tease"></div>
+      <div class="gate-buttons">
+        <button class="gate-yes" id="gate-yes" type="button">Да, это я</button>
+        <button class="gate-no" id="gate-no" type="button">Нет</button>
+      </div>
+    </div>
+
+    <div class="gate-denied">
+      <div class="gate-heart">🙈</div>
+      <h2 class="gate-title">Хм...</h2>
+      <p>
+        Тогда вход закрыт. Этот сайт можно открыть только одному
+        очень важному человеку.
+      </p>
+      <button class="gate-retry" id="gate-retry" type="button">
+        А если серьёзно?
+      </button>
+    </div>
+
+  </div>
+
+  <!-- Музыка после подтверждения -->
+
+  <audio id="gate-music" src="music/Territoriya.mp3" loop preload="auto"></audio>
+
+  <!-- 1. Приветствие -->
+
+  <header class="hero">
+    <div class="small-title">A little place for us</div>
+
+    <h1>
+      This is my favorite kind of <em>happiness.</em>
+    </h1>
+
+    <p class="hero-description">
+      Среди всех мест на свете моё любимое — рядом с тобой.
+    </p>
+
+    <a class="scroll-link" href="#our-photos">
+      НАШИ МОМЕНТЫ ↓
+    </a>
+  </header>
+
+  <!-- 2. Коллаж фотографий -->
+
+  <section id="our-photos">
+    <div class="section-inner">
+
+      <div class="section-label">Our little world</div>
+
+      <h2 class="section-title">
+        Together is my <em>favorite place to be</em>
+      </h2>
+
+      <div class="collage-layout">
+
+        <div class="photo ph-left">
+          <img src="photo/pisun.jpg" alt="Женя" loading="lazy">
+        </div>
+
+        <div class="photo ph-center">
+          <img src="photo/sixteee.jpg" alt="Мы вместе" loading="lazy">
+        </div>
+
+        <div class="photo ph-right">
+          <img src="photo/vlad.jpg" alt="Влад" loading="lazy">
+        </div>
+
+        <div class="note">
+          You make ordinary days feel special.
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Таймер до встречи -->
+
+  <section class="countdown-section" id="countdown">
+    <div class="section-inner">
+
+      <div class="section-label">Until we meet again</div>
+
+      <h2 class="section-title countdown-title">
+        Before our <em>meeting</em>
+      </h2>
+
+      <p class="countdown-subtitle">
+        Ещё немного — и я снова смогу тебя обнять.
+      </p>
+
+      <div class="timer">
+
+        <div class="time-box">
+          <div class="time-value" id="days">00</div>
+          <div class="time-label">Days</div>
+        </div>
+
+        <div class="colon">:</div>
+
+        <div class="time-box">
+          <div class="time-value" id="hours">00</div>
+          <div class="time-label">Hours</div>
+        </div>
+
+        <div class="colon">:</div>
+
+        <div class="time-box">
+          <div class="time-value" id="mins">00</div>
+          <div class="time-label">Minutes</div>
+        </div>
+
+        <div class="colon">:</div>
+
+        <div class="time-box">
+          <div class="time-value" id="secs">00</div>
+          <div class="time-label">Seconds</div>
+        </div>
+
+      </div>
+
+      <p class="after-countdown" id="after-countdown" hidden>
+        Теперь главное — скорее увидеть тебя. ❤️
+      </p>
+
+    </div>
+  </section>
+
+  <!-- 4. Письмо для Жени -->
+
+  <section class="letter-section" id="letter">
+    <div class="section-inner">
+
+      <div class="section-label">Something from my heart</div>
+
+      <h2 class="section-title">
+        A little letter <em>for you</em>
+      </h2>
+
+      <p class="letter-intro">
+        Я приготовил для тебя кое-что особенное.
+      </p>
+
+      <button class="envelope" id="open-letter" type="button">
+        <span class="envelope-heart">♡</span>
+        <span class="envelope-title">для тебя</span>
+        <span class="envelope-hint">нажми, чтобы открыть</span>
+      </button>
+
+    </div>
+  </section>
+
+  <!-- 5. Отправка фотографий (через Яндекс Форму) -->
+
+  <section class="upload-section" id="upload">
+    <div class="section-inner">
+
+      <div class="section-label">Send me your moments</div>
+
+      <h2 class="section-title">
+        Пришли мне <em>наши фото</em>
+      </h2>
+
+      <p class="letter-intro">
+        Нажми кнопку — откроется форма, там выберешь фотографии,
+        и они сразу попадут ко мне.
+      </p>
+
+      <a class="upload-button"
+         href="https://forms.yandex.ru/u/6ad0017b852af36714c7a27a"
+         target="_blank" rel="noopener">
+        Выбрать фото
+      </a>
+
+    </div>
+  </section>
+
+  <!-- 6. Завершение -->
+
+  <footer>
+    <span class="heart" aria-hidden="true">♡</span>
+
+    <p>
+      No matter the distance, you are close to my heart.
+    </p>
+
+    <div class="signature">
+      MADE WITH LOVE, FOR YOU
+    </div>
+  </footer>
+
+  <!-- 7. Окно увеличения фотографий -->
+
+  <div
+    class="lightbox"
+    id="lightbox"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Увеличенная фотография"
+    aria-hidden="true"
+  >
+    <button class="close-lightbox" id="close-lightbox"
+      type="button" aria-label="Закрыть фотографию">
+      &times;
+    </button>
+
+    <img src="" alt="" id="lightbox-image">
+  </div>
+
+  <!-- 8. Письмо поверх страницы — тетрадный лист в клетку -->
+
+  <div
+    class="letter-overlay"
+    id="letter-overlay"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Письмо"
+    aria-hidden="true"
+  >
+    <article class="letter-paper" id="letter-paper">
+      <div class="letter-date">Любимке</div>
+
+      <h3>Жень, ❤️</h3>
+
+      <p>
+        Раз ты открыла это письмо — значит, сайт
+        ты всё-таки открыла. Надеюсь, кнопка «Нет» не слишком
+        от тебя убегала. Она тут не просто так: на этом сайте
+        всё существует только для тебя.
+      </p>
+
+      <p>
+        Хотел написать что-то красивое, но правда
+        проще. Ты — самая любимая часть моих дней. Каждое
+        утро я открываю телефон и первым делом смотрю,
+        написала ли ты.
+      </p>
+
+      <p>
+        Внизу страницы идет отсчёт: десять дней, несколько
+        часов и минуты до нашей встречи. Я смотрю на эти
+        цифры чаще, чем готов признать. Но знаешь, что я
+        понял? Считать осталось недолго. А потом можно будет
+        просто насладиться временем проведенным вместе.
+      </p>
+
+      <p>
+        До встречи. Не грусти моя рыба
+      </p>
+
+      <div class="letter-signature">
+        Влад ❤️
+      </div>
+
+      <button class="close-letter" id="close-letter" type="button">
+        Сложить письмо
+      </button>
+    </article>
+  </div>
+
+  <!-- JavaScript -->
+
+  <script>
+    // ===== Окно-пропуск с убегающей кнопкой «Нет» =====
+
+    const gate = document.getElementById('gate');
+    const gateYes = document.getElementById('gate-yes');
+    const gateNo = document.getElementById('gate-no');
+    const gateRetry = document.getElementById('gate-retry');
+    const gateTease = document.getElementById('gate-tease');
+    const gateMusic = document.getElementById('gate-music');
+
+    // Сколько раз кнопка «Нет» убежит, прежде чем исчезнет.
+    // По числу фраз в массиве ниже.
+    const teaseLines = [
+      'Хм, кнопка «Нет» тут явно не работает 😏',
+      'Она убегает... как будто чего-то боится',
+      'Остался только один вариант. Ты знаешь какой ❤️'
+    ];
+    const maxEscapes = teaseLines.length;
+    const escapeRadius = 90;   // дистанция, с которой кнопка паникует
+    const cooldownTime = 300;  // пауза между побегами в миллисекундах
+
+    let escapes = 0;
+    let mouseX = 0;
+    let mouseY = 0;
+    let lastEscape = 0;
+
+    function unlockSite() {
+      gate.classList.add('hidden');
+      gate.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('locked');
+
+      // Запускаем музыку с тихого нарастания.
+      gateMusic.volume = 0;
+      gateMusic.play().catch(function () {
+        // Если браузер всё же запретил — просто играем без нарастания.
+        gateMusic.volume = 0.5;
+      });
+
+      const fadeVolume = setInterval(function () {
+        gateMusic.volume = Math.min(gateMusic.volume + 0.02, 0.5);
+        if (gateMusic.volume >= 0.5) {
+          clearInterval(fadeVolume);
+        }
+      }, 200);
+    }
+
+    gateYes.addEventListener('click', unlockSite);
+
+    gateRetry.addEventListener('click', function () {
+      gate.classList.remove('denied');
+      gateTease.textContent = '';
+      escapes = 0;
+
+      // Возвращаем кнопку на место, если она улетала.
+      if (escapes < maxEscapes) {
+        gateNo.classList.remove('flying');
+        gateNo.style.left = '';
+        gateNo.style.top = '';
+        gateNo.style.display = '';
+      }
+    });
+
+    function flyAway() {
+      if (escapes >= maxEscapes) {
+        return;
+      }
+
+      // Защита от двойного срабатывания за одно движение мыши.
+      const now = Date.now();
+      if (now - lastEscape < cooldownTime) {
+        return;
+      }
+      lastEscape = now;
+
+      gateTease.textContent = teaseLines[escapes];
+
+      // Превращаем кнопку в летающую, если она ещё не летает.
+      if (!gateNo.classList.contains('flying')) {
+        const rect = gateNo.getBoundingClientRect();
+        gateNo.classList.add('flying');
+        gateNo.style.left = rect.left + 'px';
+        gateNo.style.top = rect.top + 'px';
+      }
+
+      const margin = 12;
+      const width = gateNo.offsetWidth;
+      const height = gateNo.offsetHeight;
+      const maxX = window.innerWidth - width - margin;
+      const maxY = window.innerHeight - height - margin;
+
+      // Подбираем позицию подальше от курсора — до 20 попыток.
+      let x = margin;
+      let y = margin;
+      for (let attempt = 0; attempt < 20; attempt++) {
+        x = margin + Math.random() * Math.max(maxX - margin, margin);
+        y = margin + Math.random() * Math.max(maxY - margin, margin);
+
+        const centerX = x + width / 2;
+        const centerY = y + height / 2;
+
+        if (Math.hypot(centerX - mouseX, centerY - mouseY) > 160) {
+          break;
+        }
+      }
+
+      gateNo.style.left = x + 'px';
+      gateNo.style.top = y + 'px';
+
+      escapes = escapes + 1;
+
+      // После всех побегов кнопка исчезает навсегда.
+      if (escapes >= maxEscapes) {
+        gateTease.textContent = 'Кнопки «Нет» больше нет. Осталось только «Да».';
+        gateNo.style.display = 'none';
+      }
+    }
+
+    // Слежение за курсором: кнопка пугается заранее.
+    document.addEventListener('mousemove', function (event) {
+      mouseX = event.clientX;
+      mouseY = event.clientY;
+
+      if (escapes >= maxEscapes) {
+        return;
+      }
+
+      const rect = gateNo.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+
+      if (Math.hypot(centerX - mouseX, centerY - mouseY) < escapeRadius) {
+        flyAway();
+      }
+    });
+
+    // Наведение вплотную — тоже побег.
+    gateNo.addEventListener('mouseenter', flyAway);
+
+    // На телефоне — убегает в момент касания, до нажатия.
+    gateNo.addEventListener('touchstart', function (event) {
+      event.preventDefault();
+      flyAway();
+    }, { passive: false });
+
+    // ===== Таймер =====
+
+    // Дата следующей встречи: 24 октября 2026 года, 17:48.
+    // Месяц указывается с нуля: 9 = октябрь.
+
+    const meetingDate = new Date(2026, 9, 24, 17, 48, 0);
+
+    const daysElement = document.getElementById('days');
+    const hoursElement = document.getElementById('hours');
+    const minsElement = document.getElementById('mins');
+    const secsElement = document.getElementById('secs');
+    const afterElement = document.getElementById('after-countdown');
+
+    function pad(number) {
+      return String(number).padStart(2, '0');
+    }
+
+    function updateCountdown() {
+      const difference = meetingDate.getTime() - Date.now();
+
+      if (difference <= 0) {
+        daysElement.textContent = '00';
+        hoursElement.textContent = '00';
+        minsElement.textContent = '00';
+        secsElement.textContent = '00';
+
+        afterElement.hidden = false;
+
+        clearInterval(countdownInterval);
+        return;
+      }
+
+      const days = Math.floor(difference / 86400000);
+      const hours = Math.floor(difference / 3600000) % 24;
+      const minutes = Math.floor(difference / 60000) % 60;
+      const seconds = Math.floor(difference / 1000) % 60;
+
+      daysElement.textContent = pad(days);
+      hoursElement.textContent = pad(hours);
+      minsElement.textContent = pad(minutes);
+      secsElement.textContent = pad(seconds);
+    }
+
+    updateCountdown();
+
+    const countdownInterval = setInterval(updateCountdown, 1000);
+
+    // ===== Письмо как окно поверх страницы =====
+
+    const letterOverlay = document.getElementById('letter-overlay');
+    const letterPaper = document.getElementById('letter-paper');
+    const openLetterButton = document.getElementById('open-letter');
+    const closeLetterButton = document.getElementById('close-letter');
+
+    function openLetter() {
+      letterPaper.hidden = false;
+      letterOverlay.classList.add('active');
+      letterOverlay.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('locked');
+      closeLetterButton.focus();
+    }
+
+    function closeLetter() {
+      letterOverlay.classList.remove('active');
+      letterOverlay.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('locked');
+      openLetterButton.focus();
+    }
+
+    openLetterButton.addEventListener('click', openLetter);
+    closeLetterButton.addEventListener('click', closeLetter);
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && letterOverlay.classList.contains('active')) {
+        closeLetter();
+      }
+    });
+
+    // ===== Открытие фотографий =====
+
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImage = document.getElementById('lightbox-image');
+    const closeButton = document.getElementById('close-lightbox');
+
+    let previousFocus = null;
+
+    document.querySelectorAll('.photo img').forEach(function (photo) {
+      photo.addEventListener('click', function () {
+        previousFocus = document.activeElement;
+
+        lightboxImage.src = photo.src;
+        lightboxImage.alt = photo.alt;
+
+        lightbox.classList.add('active');
+        lightbox.setAttribute('aria-hidden', 'false');
+        closeButton.focus();
+      });
+    });
+
+    function closeLightbox() {
+      lightbox.classList.remove('active');
+      lightbox.setAttribute('aria-hidden', 'true');
+      lightboxImage.src = '';
+      lightboxImage.alt = '';
+
+      if (previousFocus) {
+        previousFocus.focus();
+      }
+    }
+
+    lightbox.addEventListener('click', function (event) {
+      if (event.target === lightbox || event.target === closeButton) {
+        closeLightbox();
+      }
+    });
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && lightbox.classList.contains('active')) {
+        closeLightbox();
+      }
+    });
+  </script>
+
+</body>
+</html>
